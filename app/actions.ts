@@ -292,13 +292,13 @@ export async function updateItem(prevState: any, formData: FormData) {
             contact,
             updatedAt: serverTimestamp()
         });
-
-        // Re-redirect to matches or dashboard
-        redirect(`/matches/${id}`);
     } catch (e) {
         console.error("Error updating item:", e);
         return { message: "Failed to update item." };
     }
+
+    // Re-redirect to matches or dashboard
+    redirect(`/matches/${id}`);
 }
 // NEW: Cascading Delete User
 export async function deleteUserAndData(email: string) {
