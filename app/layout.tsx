@@ -4,6 +4,8 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import { usePathname } from "next/navigation";
 
+import { ToastProvider } from "./components/ToastProvider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -16,10 +18,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-background text-foreground antialiased suppress-hydration-warning">
-        {!isLoginPage && !isAdminPage && <Navbar />}
-        <main className={!isLoginPage && !isAdminPage ? "pt-24" : ""}>
-          {children}
-        </main>
+        <ToastProvider>
+          {!isLoginPage && !isAdminPage && <Navbar />}
+          <main className={!isLoginPage && !isAdminPage ? "pt-24" : ""}>
+            {children}
+          </main>
+        </ToastProvider>
       </body>
     </html>
   );

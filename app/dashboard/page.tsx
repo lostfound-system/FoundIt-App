@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import { doc, getDoc, setDoc, serverTimestamp, collection, query, where, getDocs, orderBy, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useToast } from "../components/ToastProvider";
 
 interface Item {
     id: string;
@@ -26,6 +27,7 @@ interface Item {
 
 export default function DashboardPage() {
     const router = useRouter();
+    const { showToast } = useToast();
     const [userName, setUserName] = useState<string | null>(null);
     const [showNameModal, setShowNameModal] = useState(false);
     const [nameInput, setNameInput] = useState("");
@@ -244,7 +246,7 @@ export default function DashboardPage() {
                                     if (nameInput && phoneInput) {
                                         handleSaveName(nameInput, phoneInput);
                                     } else {
-                                        alert("Please enter both name and phone number.");
+                                        showToast("Please enter both name and phone number.", "error");
                                     }
                                 }}
                                 className="w-full bg-white text-black font-bold py-4 rounded-xl mt-6 hover:scale-[1.02] active:scale-[0.98] transition-all"

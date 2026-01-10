@@ -5,13 +5,16 @@ import { useRouter } from "next/navigation";
 import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from "firebase/auth";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
-import { Search, Mail, Lock, ArrowRight, ShieldCheck, Eye, EyeOff, Bell } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, UserPlus, LogIn, Mail, Lock, Bell, Sparkles, ShieldCheck } from "lucide-react";
+import { useToast } from "./components/ToastProvider";
 
 export default function LoginPage() {
     const router = useRouter();
+    const { showToast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
     const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
     const [showPassword, setShowPassword] = useState(false);
+    const [showForgotPassword, setShowForgotPassword] = useState(false); // Added for forgot password UI state
 
     // Form State
     const [email, setEmail] = useState("");
@@ -151,7 +154,7 @@ export default function LoginPage() {
 
                 <div className="relative z-10 text-center">
                     <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-8 shadow-2xl shadow-purple-500/20 mx-auto transform hover:scale-105 transition-transform duration-500">
-                        <Search className="w-12 h-12 text-white" />
+                        <Sparkles className="w-12 h-12 text-white" />
                     </div>
                     <h1 className="text-6xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
                         Found<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">It!</span>
@@ -266,11 +269,11 @@ export default function LoginPage() {
                                         }
                                         try {
                                             await sendPasswordResetEmail(auth, email);
-                                            alert(`Password reset email sent to ${email}. Please check your inbox (and spam folder).`);
-                                            setError("");
-                                        } catch (err: any) {
-                                            console.error(err);
-                                            setError("Failed to send reset email. " + err.message);
+                                            showToast(`Password reset email sent to ${email}. Please check your inbox (and spam folder).`, "success");
+                                            setShowForgotPassword(false);
+                                        } catch (error: any) {
+                                            console.error("Error sending password reset email:", error);
+                                            showToast("Failed to send password reset email. Please try again.", "error");
                                         }
                                     }}
                                     className="text-xs text-gray-500 hover:text-purple-600 dark:text-gray-400 dark:hover:text-white transition-colors"

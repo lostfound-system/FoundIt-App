@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { collection, getDocs, query, orderBy, deleteDoc, doc, updateDoc, where, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Trash2, MapPin, LogOut, LayoutDashboard, List, CheckCircle, Search, PieChart, Users, Box, Check, User, Notebook, ShieldCheck, CheckCircle2, AlertCircle, Package, History } from "lucide-react";
+import { Trash2, MapPin, LogOut, LayoutDashboard, List, CheckCircle, Search, PieChart, Users, Box, Check, User, Notebook, ShieldCheck, CheckCircle2, AlertCircle, Package, History, Filter, X, ChevronRight, Database, BarChart3, TrendingUp, MoreVertical, Menu } from "lucide-react";
+import { useToast } from "../components/ToastProvider";
 import { resolveMatch, resolveItem, deleteItem, deleteUserAndData } from "../actions";
 
 interface Item {
@@ -50,7 +51,7 @@ type HistoryEntry = MergedItemPair | MergedItemSingle;
 const STOP_WORDS = new Set(['the', 'a', 'an', 'in', 'on', 'at', 'for', 'to', 'of', 'it', 'is', 'are', 'was', 'were', 'my', 'i', 'lost', 'found', 'item']);
 
 const calculateSimilarity = (str1: string, str2: string): number => {
-    const tokenize = (text: string) => text.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/).filter(w => w.length >= 2 && !STOP_WORDS.has(w));
+    const tokenize = (text: string) => text.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/).filter(w => w.length > 2 && !STOP_WORDS.has(w));
     const set1 = new Set(tokenize(str1));
     const set2 = new Set(tokenize(str2));
 
@@ -74,6 +75,7 @@ export default function AdminPage() {
     const [selectedItemDetail, setSelectedItemDetail] = useState<Item | null>(null); // NEW: Item Detail Modal State
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
+    const { showToast } = useToast();
 
     useEffect(() => {
         const storedEmail = localStorage.getItem("adminEmail") || "";
@@ -153,8 +155,8 @@ export default function AdminPage() {
                     const text2 = `${found.description} ${found.category} ${found.university}`;
                     const score = calculateSimilarity(text1, text2);
 
-                    // Threshold 0.15 (15% overlap)
-                    if (score > 0.15 && score > bestScore) {
+                    // Threshold 0.2 (20% overlap)
+                    if (score > 0.2 && score > bestScore) {
                         bestScore = score;
                         bestMatch = found;
                     }
@@ -184,18 +186,18 @@ export default function AdminPage() {
         }
     };
 
-    const handleDeleteUser = async (email: string) => {
+    const handleDeleteUser = async (userId: string) => {
         if (!confirm("Are you sure? This will delete the user and ALL their items permanently.")) return;
         setIsLoading(true);
         try {
-            await deleteUserAndData(email);
+            await deleteUserAndData(userId);
             // Optimistic Update or Refresh
-            // For now, simpler to full refresh or filter locally
-            setUsers(prev => prev.filter(u => u.email !== email));
+            setUsers(prev => prev.filter(u => u.id !== userId));
+            showToast("User deleted successfully.", "success");
             // Also need to remove items from local state if we want perfect sync, but ensuring Users tab is updated is key
         } catch (error) {
-            console.error(error);
-            alert("Failed to delete user.");
+            console.error("Failed to delete user:", error);
+            showToast("Failed to delete user.", "error");
         } finally {
             setIsLoading(false);
         }
@@ -207,8 +209,10 @@ export default function AdminPage() {
             setItems(items.filter(item => item.id !== itemId));
             try {
                 await deleteItem(itemId);
+                showToast("Item deleted successfully.", "success");
             } catch (error) {
                 console.error("Failed to delete item:", error);
+                showToast("Failed to delete item.", "error");
                 fetchData(); // Revert
             }
         }

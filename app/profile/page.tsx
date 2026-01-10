@@ -6,11 +6,15 @@ import { doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { User, Mail, Phone, BookOpen, ArrowLeft, Loader2, Save } from "lucide-react";
 import Link from "next/link";
+import { LOCATIONS } from "@/lib/locations";
 import RegionUniversitySelect from "../components/RegionUniversitySelect";
 import Footer from "../components/Footer";
+import { useToast } from "../components/ToastProvider";
 
 export default function ProfilePage() {
     const router = useRouter();
+    const { showToast } = useToast();
+    const [user, setUser] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
@@ -72,11 +76,11 @@ export default function ProfilePage() {
 
         // Validation: Compulsory Fields
         if (!name.trim()) {
-            alert("Username is required.");
+            showToast("Username is required.", "error");
             return;
         }
         if (!phone || phone.replace(/\D/g, '').length < 10) {
-            alert("Please enter a valid contact number (at least 10 digits).");
+            showToast("Please enter a valid contact number (at least 10 digits).", "error");
             return;
         }
 
@@ -96,10 +100,10 @@ export default function ProfilePage() {
             // Update local storage for immediate UI updates elsewhere
             localStorage.setItem("userName", name);
 
-            alert("Profile updated successfully!");
+            showToast("Profile updated successfully!", "success");
         } catch (error) {
             console.error("Error saving profile:", error);
-            alert("Failed to save profile.");
+            showToast("Failed to save profile.", "error");
         } finally {
             setSaving(false);
         }
