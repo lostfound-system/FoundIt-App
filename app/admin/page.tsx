@@ -50,7 +50,7 @@ type HistoryEntry = MergedItemPair | MergedItemSingle;
 const STOP_WORDS = new Set(['the', 'a', 'an', 'in', 'on', 'at', 'for', 'to', 'of', 'it', 'is', 'are', 'was', 'were', 'my', 'i', 'lost', 'found', 'item']);
 
 const calculateSimilarity = (str1: string, str2: string): number => {
-    const tokenize = (text: string) => text.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/).filter(w => w.length > 2 && !STOP_WORDS.has(w));
+    const tokenize = (text: string) => text.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/).filter(w => w.length >= 2 && !STOP_WORDS.has(w));
     const set1 = new Set(tokenize(str1));
     const set2 = new Set(tokenize(str2));
 
@@ -153,8 +153,8 @@ export default function AdminPage() {
                     const text2 = `${found.description} ${found.category} ${found.university}`;
                     const score = calculateSimilarity(text1, text2);
 
-                    // Threshold 0.2 (20% overlap)
-                    if (score > 0.2 && score > bestScore) {
+                    // Threshold 0.15 (15% overlap)
+                    if (score > 0.15 && score > bestScore) {
                         bestScore = score;
                         bestMatch = found;
                     }
