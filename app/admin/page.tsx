@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { collection, getDocs, query, orderBy, deleteDoc, doc, updateDoc, where, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -67,7 +67,6 @@ export default function AdminPage() {
     const [email, setEmail] = useState<string | null>(null);
     const [items, setItems] = useState<Item[]>([]);
     const [users, setUsers] = useState<UserData[]>([]);
-    const [mergedHistory, setMergedHistory] = useState<HistoryEntry[]>([]); // NEW: Merged History State
     const [activeTab, setActiveTab] = useState<'dashboard' | 'items' | 'users' | 'history'>('dashboard');
     const [filterType, setFilterType] = useState<'all' | 'lost' | 'found'>('all');
     const [selectedItemUser, setSelectedItemUser] = useState<{ item: Item, user: UserData | undefined } | null>(null);
@@ -133,58 +132,57 @@ export default function AdminPage() {
                 return timeB - timeA;
             }));
 
-            // 3. Compute Merged History (Client-Side Fuzzy Matching)
-            const resolvedItems = fetchedItems.filter(i => i.status === 'resolved');
-            const lostItems = resolvedItems.filter(i => i.type === 'lost');
-            const foundItems = resolvedItems.filter(i => i.type === 'found');
-
-            const usedFoundIds = new Set<string>();
-            const newHistory: HistoryEntry[] = [];
-
-            // Attempt to find matches for every Lost item
-            lostItems.forEach(lost => {
-                let bestMatch: Item | null = null;
-                let bestScore = 0;
-
-                // Compare with all unused Found items
-                foundItems.forEach(found => {
-                    if (usedFoundIds.has(found.id)) return;
-
-                    // Score based on Description + Category
-                    const text1 = `${lost.description} ${lost.category} ${lost.university}`;
-                    const text2 = `${found.description} ${found.category} ${found.university}`;
-                    const score = calculateSimilarity(text1, text2);
-
-                    // Threshold 0.2 (20% overlap)
-                    if (score > 0.2 && score > bestScore) {
-                        bestScore = score;
-                        bestMatch = found;
-                    }
-                });
-
-                if (bestMatch) {
-                    newHistory.push({ type: 'pair', lost, found: bestMatch, score: bestScore });
-                    usedFoundIds.add((bestMatch as Item).id);
-                } else {
-                    newHistory.push({ type: 'single', item: lost });
-                }
-            });
-
-            // Add remaining Found items
-            foundItems.forEach(found => {
-                if (!usedFoundIds.has(found.id)) {
-                    newHistory.push({ type: 'single', item: found });
-                }
-            });
-
-            setMergedHistory(newHistory);
-
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
             setIsLoading(false);
         }
     };
+
+    // Derived History (Solved Cases) - Updates automatically when items change
+    const mergedHistory = useMemo(() => {
+        const resolvedList = items.filter(i => i.status === 'resolved');
+        const lostItems = resolvedList.filter(i => i.type === 'lost');
+        const foundItems = resolvedList.filter(i => i.type === 'found');
+
+        const usedFoundIds = new Set<string>();
+        const newHistory: HistoryEntry[] = [];
+
+        // Attempt to find matches for every Lost item
+        lostItems.forEach(lost => {
+            let bestMatch: Item | null = null;
+            let bestScore = 0;
+
+            foundItems.forEach(found => {
+                if (usedFoundIds.has(found.id)) return;
+
+                const text1 = `${lost.description} ${lost.category} ${lost.university}`;
+                const text2 = `${found.description} ${found.category} ${found.university}`;
+                const score = calculateSimilarity(text1, text2);
+
+                if (score > 0.2 && score > bestScore) {
+                    bestScore = score;
+                    bestMatch = found;
+                }
+            });
+
+            if (bestMatch) {
+                newHistory.push({ type: 'pair', lost, found: bestMatch, score: bestScore });
+                usedFoundIds.add((bestMatch as Item).id);
+            } else {
+                newHistory.push({ type: 'single', item: lost });
+            }
+        });
+
+        // Add remaining Found items
+        foundItems.forEach(found => {
+            if (!usedFoundIds.has(found.id)) {
+                newHistory.push({ type: 'single', item: found });
+            }
+        });
+
+        return newHistory;
+    }, [items]);
 
     const handleDeleteUser = async (userId: string) => {
         if (!confirm("Are you sure? This will delete the user and ALL their items permanently.")) return;
@@ -263,7 +261,7 @@ export default function AdminPage() {
 
     // Derived Stats
     const totalItems = items.length;
-    const resolvedItems = items.filter(i => i.status === 'resolved').length;
+    const solvedCount = mergedHistory.length; // Uses Merged History Count
     const activeLost = items.filter(i => i.type === 'lost' && i.status !== 'resolved').length;
     const activeFound = items.filter(i => i.type === 'found' && i.status !== 'resolved').length;
 
@@ -577,25 +575,25 @@ export default function AdminPage() {
                                     value={users.length}
                                     icon={Users}
                                     color="blue"
-                                    onClick={() => setActiveTab('users')} // Make Clickable
+                                    onClick={() => setActiveTab('users')}
                                 />
                                 <StatsCard
                                     title="Active Lost"
                                     value={activeLost}
                                     icon={Search}
                                     color="pink"
-                                    onClick={() => { setActiveTab('items'); setFilterType('lost'); }} // NEW: Clickable
+                                    onClick={() => { setActiveTab('items'); setFilterType('lost'); }}
                                 />
                                 <StatsCard
                                     title="Active Found"
                                     value={activeFound}
                                     icon={Box}
                                     color="emerald"
-                                    onClick={() => { setActiveTab('items'); setFilterType('found'); }} // NEW: Clickable
+                                    onClick={() => { setActiveTab('items'); setFilterType('found'); }}
                                 />
                                 <StatsCard
-                                    title="Resolved (History)"
-                                    value={resolvedItems}
+                                    title="Solved (History)"
+                                    value={solvedCount}
                                     icon={CheckCircle}
                                     color="purple"
                                     onClick={() => setActiveTab('history')}
@@ -608,7 +606,7 @@ export default function AdminPage() {
                                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
                                         <PieChart className="w-5 h-5 text-purple-400" /> Item Distribution (By Category)
                                     </h3>
-
+                                    {/* ... Logic for distribution (preserve) ... */}
                                     <div className="flex-1 flex flex-col justify-center w-full min-h-[200px]">
                                         {/* Category Progress List */}
                                         {(() => {
@@ -620,7 +618,7 @@ export default function AdminPage() {
 
                                             const sortedCategories = Object.entries(categoryCounts)
                                                 .sort(([, a], [, b]) => b - a)
-                                                .slice(0, 5); // Top 5 Categories
+                                                .slice(0, 5);
 
                                             const maxCount = Math.max(...Object.values(categoryCounts), 1);
 
@@ -649,7 +647,6 @@ export default function AdminPage() {
                                                             </div>
                                                         </div>
                                                     ))}
-                                                    {/* 'Others' summary if needed, but top 5 is usually enough for a quick view */}
                                                 </div>
                                             );
                                         })()}
@@ -667,8 +664,8 @@ export default function AdminPage() {
                                             className="absolute inset-0 rounded-full"
                                             style={{
                                                 background: `conic-gradient(
-                                                #a855f7 0% ${totalItems > 0 ? (resolvedItems / totalItems) * 100 : 0}%, 
-                                                rgba(255, 255, 255, 0.1) ${totalItems > 0 ? (resolvedItems / totalItems) * 100 : 0}% 100%
+                                                #a855f7 0% ${totalItems > 0 ? (solvedCount / totalItems) * 100 : 0}%, 
+                                                rgba(255, 255, 255, 0.1) ${totalItems > 0 ? (solvedCount / totalItems) * 100 : 0}% 100%
                                             )`,
                                                 boxShadow: '0 0 30px rgba(168, 85, 247, 0.2)'
                                             }}
@@ -676,20 +673,20 @@ export default function AdminPage() {
                                         {/* Inner Circle for Donut Effect */}
                                         <div className="absolute inset-4 bg-gray-50 dark:bg-[#0a0a0a] rounded-full flex flex-col items-center justify-center z-10">
                                             <div className="text-4xl font-bold text-gray-900 dark:text-white mb-1">
-                                                {totalItems > 0 ? Math.round((resolvedItems / totalItems) * 100) : 0}%
+                                                {totalItems > 0 ? Math.round((solvedCount / totalItems) * 100) : 0}%
                                             </div>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider">Resolved</p>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider">Solved</p>
                                         </div>
                                     </div>
 
                                     <div className="flex gap-8 text-sm">
                                         <div className="flex items-center gap-2">
                                             <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-                                            <span className="text-gray-500 dark:text-gray-400">Resolved ({resolvedItems})</span>
+                                            <span className="text-gray-500 dark:text-gray-400">Solved ({solvedCount})</span>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <div className="w-3 h-3 rounded-full bg-gray-200 dark:bg-white/10"></div>
-                                            <span className="text-gray-500 dark:text-gray-400">Open ({totalItems - resolvedItems})</span>
+                                            <span className="text-gray-500 dark:text-gray-400">Open ({totalItems - solvedCount})</span>
                                         </div>
                                     </div>
                                 </div>
