@@ -12,8 +12,9 @@ interface MatchCandidate {
     imageUrl: string;
     location: string;
     contact: string;
-    email?: string; // New Logic
-    contactType?: 'email' | 'phone'; // New Logic
+    email?: string;
+    userName?: string; // Added field
+    contactType?: 'email' | 'phone';
     matchType: string;
     university: string;
 }
@@ -114,11 +115,24 @@ export default function MatchesPage() {
                                         <div className="flex-1 p-8 flex flex-col justify-center">
                                             {isConfirmed ? (
                                                 <div className="animate-in fade-in zoom-in duration-500 space-y-6">
-                                                    <div className="flex items-center gap-3 text-emerald-400 mb-2">
-                                                        <div className="p-2 bg-emerald-500/20 rounded-full">
-                                                            <Check className="w-6 h-6" />
+
+                                                    {/* Header with Match Badge & Safe Tips */}
+                                                    <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-6">
+                                                        <div className="flex items-center gap-3 text-emerald-400">
+                                                            <div className="p-2 bg-emerald-500/20 rounded-full">
+                                                                <Check className="w-6 h-6" />
+                                                            </div>
+                                                            <span className="text-xl font-bold">It's a Match!</span>
                                                         </div>
-                                                        <span className="text-xl font-bold">It's a Match!</span>
+
+                                                        {/* Safe Return Tips (Moved Here) */}
+                                                        <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-3 flex items-start gap-3 max-w-sm">
+                                                            <ShieldCheck className="w-5 h-5 text-blue-400 mt-0.5 shrink-0" />
+                                                            <div>
+                                                                <p className="text-blue-200 text-xs font-bold mb-1">Safe Return Tips</p>
+                                                                <p className="text-blue-300 text-[10px] leading-tight">Meet in a public place (e.g. {candidate.university} Campus Security).</p>
+                                                            </div>
+                                                        </div>
                                                     </div>
 
                                                     <div>
@@ -126,7 +140,23 @@ export default function MatchesPage() {
                                                         <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
                                                             <p className="text-gray-400 text-sm uppercase font-bold tracking-widest mb-4">Owner Contact Details</p>
 
-                                                            <div className="flex flex-col gap-4">
+                                                            <div className="space-y-4">
+                                                                {/* User Profile Info */}
+                                                                <div className="flex items-center gap-4">
+                                                                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-lg">
+                                                                        <User className="w-6 h-6" />
+                                                                    </div>
+                                                                    <div>
+                                                                        <p className="text-white font-bold text-lg">{candidate.userName || "FoundIt User"}</p>
+                                                                        <p className="text-emerald-400 text-xs font-medium flex items-center gap-1">
+                                                                            <ShieldCheck className="w-3 h-3" /> Verified Member
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="h-px bg-white/10" />
+
+                                                                {/* Contact Methods */}
                                                                 <div className="flex items-center gap-4">
                                                                     <div className={`w-12 h-12 rounded-full flex items-center justify-center ${candidate.contactType === 'phone' ? 'bg-pink-500/20 text-pink-400' : 'bg-purple-500/20 text-purple-400'}`}>
                                                                         {candidate.contactType === 'phone' ? <Phone className="w-5 h-5" /> : <Mail className="w-5 h-5" />}
@@ -134,16 +164,6 @@ export default function MatchesPage() {
                                                                     <div>
                                                                         <p className="text-white font-mono text-lg font-medium">{candidate.contact}</p>
                                                                         <p className="text-gray-500 text-xs">{candidate.contactType === 'phone' ? 'Verified Phone / WhatsApp' : 'Verified Email'}</p>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div className="flex items-center gap-4">
-                                                                    <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
-                                                                        <ShieldCheck className="w-5 h-5" />
-                                                                    </div>
-                                                                    <div>
-                                                                        <p className="text-white font-medium">Safe Return Tips</p>
-                                                                        <p className="text-gray-500 text-xs">Meet in a public place (e.g. {candidate.university} Campus Security).</p>
                                                                     </div>
                                                                 </div>
                                                             </div>

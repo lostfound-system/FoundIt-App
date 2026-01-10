@@ -190,43 +190,55 @@ export async function findMatches(itemId: string) {
         if (!itemSnap.exists()) return [];
         const item = itemSnap.data();
 
-        // 2. Define Candidate Scope (Broader than before)
+        // 2. Define Candidate Scope (Strict: Location + Category)
         const matchType = item.type === "lost" ? "found" : "lost";
 
         const q = query(
             collection(db, "items"),
             where("type", "==", matchType),
-            where("status", "==", "open")
+            where("status", "==", "open"),
+            where("university", "==", item.university),
+            where("category", "==", item.category)
         );
 
         const candidatesSnap = await getDocs(q);
         const allCandidates = candidatesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-        console.log(`Searching against ${allCandidates.length} potential candidates...`);
+        console.log(`Searching against ${allCandidates.length} candidates (Same Uni + Category)...`);
 
-        // 3. Keyword / Fuzzy Filter (Client-side logic)
-        const keywords = item.description.toLowerCase().split(/\s+/).filter((w: string) => w.length > 3);
+        // 3. Keyword Filter (Description Matching)
+        // Stop words to ignore during matching
+        const stopWords = new Set([
+            'the', 'a', 'an', 'and', 'or', 'but', 'is', 'are', 'was', 'were',
+            'of', 'in', 'on', 'at', 'to', 'for', 'with', 'my', 'lost', 'found',
+            'item', 'please', 'help', 'looking', 'searching'
+        ]);
 
-        const keywordMatches = allCandidates.filter((candidate: any) => {
-            const candDesc = candidate.description.toLowerCase();
+        const normalize = (text: string) => text.toLowerCase().replace(/[^\w\s]/g, '');
+
+        const keywords = normalize(item.description)
+            .split(/\s+/)
+            .filter((w: string) => w.length > 2 && !stopWords.has(w));
+
+        console.log("Extracted Keywords:", keywords);
+
+        const finalCandidates = allCandidates.filter((candidate: any) => {
+            const candDesc = normalize(candidate.description);
+            // Check if ANY keyword from source exists in candidate description
+            // OR if candidate description has keywords that match source (bidirectional? No, user said "match the keywords as per the description given by the user") -> checks Source keywords against Candidate.
             const hasKeywordMatch = keywords.some((kw: string) => candDesc.includes(kw));
-            const sameUni = candidate.university === item.university;
-            return hasKeywordMatch && sameUni;
+            return hasKeywordMatch;
         });
 
-        let finalCandidates = keywordMatches;
+        console.log(`Found ${finalCandidates.length} keyword matches.`);
 
-        if (finalCandidates.length === 0) {
-            // Fallback: Try AI on all items from same University
-            finalCandidates = allCandidates.filter((c: any) => c.university === item.university);
-        }
-
-        // 4. Resolve Contact Details (Phone -> Email)
+        // 4. Resolve Contact Details (Phone -> Email & Username)
         const enhancedCandidates = await Promise.all(finalCandidates.map(async (c: any) => {
             let email = c.contact;
+            let userName = "FoundIt User"; // Default
             let contactType = c.contact.includes('@') ? 'email' : 'phone';
 
-            // If contact is a phone number, try to find the user's email
+            // If contact is a phone number, try to find the user's email & name
             if (contactType === 'phone') {
                 try {
                     // Try to find user where phoneNumber matches
@@ -234,17 +246,31 @@ export async function findMatches(itemId: string) {
                     const usersSnap = await getDocs(usersQ);
 
                     if (!usersSnap.empty) {
-                        email = usersSnap.docs[0].data().email; // Found the email!
+                        const userData = usersSnap.docs[0].data();
+                        email = userData.email;
+                        userName = userData.name || "FoundIt User";
                     } else {
-                        // Fallback: Check if the contact string itself is a User ID (which might be email)
-                        // This handles cases where old data might have mixed formats
+                        // Fallback: Check if the contact string itself is a User ID
                         const directUserSnap = await getDoc(doc(db, "users", c.contact));
                         if (directUserSnap.exists()) {
-                            email = directUserSnap.data().email || directUserSnap.id;
+                            const userData = directUserSnap.data();
+                            email = userData.email || directUserSnap.id;
+                            userName = userData.name || "FoundIt User";
                         }
                     }
                 } catch (e) {
-                    console.error("Error resolving email for contact:", c.contact, e);
+                    console.error("Error resolving user details for contact:", c.contact, e);
+                }
+            } else {
+                // If contact is email, try to fetch name
+                try {
+                    const userRef = doc(db, "users", c.contact);
+                    const userSnap = await getDoc(userRef);
+                    if (userSnap.exists()) {
+                        userName = userSnap.data().name || "FoundIt User";
+                    }
+                } catch (e) {
+                    // Ignore error
                 }
             }
 
@@ -255,9 +281,11 @@ export async function findMatches(itemId: string) {
                 location: c.location,
                 contact: c.contact, // Display Value (might be phone)
                 email: email,       // Action Value (always try to be email)
+                userName: userName, // New Field
                 contactType: contactType,
                 university: c.university,
-                matchType: keywordMatches.includes(c) ? 'Keyword Match' : 'Potential Match'
+                category: c.category,
+                matchType: 'Keyword Match'
             };
         }));
 
