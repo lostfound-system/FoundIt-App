@@ -174,7 +174,7 @@ export default function LoginPage() {
 
                 <div className="absolute bottom-8 left-8 flex items-center gap-2 opacity-50">
                     <div className="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center font-bold text-xs">N</div>
-                    <span className="text-[10px] text-gray-500">Powered by Gemini AI • Version 2.0</span>
+                    <span className="text-[10px] text-gray-500">Powered by TechTitans • Version 1.0</span>
                 </div>
             </div>
 
