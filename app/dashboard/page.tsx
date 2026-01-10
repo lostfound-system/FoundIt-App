@@ -299,38 +299,7 @@ export default function DashboardPage() {
                     </Link>
                 </div>
 
-                {/* --- FUTURE FUNCTIONALITIES PREVIEW --- */}
-                <div className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
-                    <div className="glass p-8 rounded-3xl border border-gray-200 dark:border-white/10 relative overflow-hidden bg-white dark:bg-transparent">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
 
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
-                            <span className="flex h-3 w-3 rounded-full bg-purple-500 animate-pulse" />
-                            Future Functionalities
-                        </h2>
-
-                        <div className="grid md:grid-cols-2 gap-6">
-                            {/* Feature 1 */}
-                            <div className="p-6 rounded-2xl bg-gray-50/50 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:border-purple-500/30 transition-all group">
-                                <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                    <Mail className="w-6 h-6 text-purple-500" />
-                                </div>
-                                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Smart Notifications</h3>
-                                <p className="text-sm text-gray-500 dark:text-gray-400">Get instant alerts via Email & SMS.</p>
-                                <span className="inline-block mt-4 text-xs font-bold text-purple-500 bg-purple-500/10 px-2 py-1 rounded">Coming Soon</span>
-                            </div>
-                            {/* Feature 2 */}
-                            <div className="p-6 rounded-2xl bg-gray-50/50 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:border-pink-500/30 transition-all group">
-                                <div className="w-12 h-12 rounded-xl bg-pink-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                    <Search className="w-6 h-6 text-pink-500" />
-                                </div>
-                                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Image Recognition AI</h3>
-                                <p className="text-sm text-gray-500 dark:text-gray-400">Auto-match items based on uploaded photos.</p>
-                                <span className="inline-block mt-4 text-xs font-bold text-pink-500 bg-pink-500/10 px-2 py-1 rounded">Coming Soon</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 {/* MY REPORTS SECTION */}
                 <div className="animate-fade-in delay-200">

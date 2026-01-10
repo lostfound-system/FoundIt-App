@@ -41,6 +41,7 @@ export default function Footer() {
                             <Link href="/dashboard" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Dashboard</Link>
                             <Link href="/submit?type=lost" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Report Lost</Link>
                             <Link href="/submit?type=found" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Report Found</Link>
+                            <Link href="/about" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">About & Vision</Link>
                         </div>
                     </div>
                 </div>
