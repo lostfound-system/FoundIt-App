@@ -202,10 +202,10 @@ export default function DashboardPage() {
                 resolutionNote: note,
                 otherParty: otherPartyDetail // Specific field for indexing/querying later
             });
-            alert("History updated successfully!");
+            showToast("History updated successfully!", "success");
         } catch (error) {
             console.error("Error resolving item:", error);
-            alert("Something went wrong. Please try again.");
+            showToast("Something went wrong. Please try again.", "error");
             // Revert would go here, but complex with state.
         }
     };

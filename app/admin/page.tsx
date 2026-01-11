@@ -665,8 +665,8 @@ export default function AdminPage() {
                                             className="absolute inset-0 rounded-full"
                                             style={{
                                                 background: `conic-gradient(
-                                                #a855f7 0% ${totalItems > 0 ? (solvedCount / totalItems) * 100 : 0}%, 
-                                                rgba(255, 255, 255, 0.1) ${totalItems > 0 ? (solvedCount / totalItems) * 100 : 0}% 100%
+                                                #a855f7 0% ${(solvedCount + activeLost + activeFound) > 0 ? (solvedCount / (solvedCount + activeLost + activeFound)) * 100 : 0}%, 
+                                                rgba(255, 255, 255, 0.1) ${(solvedCount + activeLost + activeFound) > 0 ? (solvedCount / (solvedCount + activeLost + activeFound)) * 100 : 0}% 100%
                                             )`,
                                                 boxShadow: '0 0 30px rgba(168, 85, 247, 0.2)'
                                             }}
@@ -674,7 +674,7 @@ export default function AdminPage() {
                                         {/* Inner Circle for Donut Effect */}
                                         <div className="absolute inset-4 bg-gray-50 dark:bg-[#0a0a0a] rounded-full flex flex-col items-center justify-center z-10">
                                             <div className="text-4xl font-bold text-gray-900 dark:text-white mb-1">
-                                                {totalItems > 0 ? Math.round((solvedCount / totalItems) * 100) : 0}%
+                                                {(solvedCount + activeLost + activeFound) > 0 ? Math.round((solvedCount / (solvedCount + activeLost + activeFound)) * 100) : 0}%
                                             </div>
                                             <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider">Solved</p>
                                         </div>
@@ -687,7 +687,7 @@ export default function AdminPage() {
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <div className="w-3 h-3 rounded-full bg-gray-200 dark:bg-white/10"></div>
-                                            <span className="text-gray-500 dark:text-gray-400">Open ({totalItems - solvedCount})</span>
+                                            <span className="text-gray-500 dark:text-gray-400">Open ({activeLost + activeFound})</span>
                                         </div>
                                     </div>
                                 </div>
