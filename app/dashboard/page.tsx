@@ -212,7 +212,7 @@ export default function DashboardPage() {
 
     return (
         <div className="min-h-screen flex flex-col pt-20">
-            <div className="flex-1 w-full max-w-5xl mx-auto p-6">
+            <div className="flex-1 w-full max-w-5xl mx-auto p-4 md:p-6">
 
                 {/* Username Modal */}
                 {showNameModal && (

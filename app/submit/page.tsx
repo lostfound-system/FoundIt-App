@@ -62,7 +62,7 @@ function SubmitForm() {
     }, [router]);
 
     return (
-        <div className="min-h-screen p-6 pb-20 bg-gray-50 dark:bg-[#0a0a0a]">
+        <div className="min-h-screen p-4 md:p-6 pb-20 bg-gray-50 dark:bg-[#0a0a0a]">
             <div className="max-w-3xl mx-auto">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">

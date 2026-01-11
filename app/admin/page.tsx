@@ -74,6 +74,7 @@ export default function AdminPage() {
     const [selectedHistoryPair, setSelectedHistoryPair] = useState<MergedItemPair | null>(null); // NEW: Pair Modal State
     const [selectedItemDetail, setSelectedItemDetail] = useState<Item | null>(null); // NEW: Item Detail Modal State
     const [isLoading, setIsLoading] = useState(true);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Mobile Menu State
     const router = useRouter();
     const { showToast } = useToast();
 
@@ -276,7 +277,63 @@ export default function AdminPage() {
     if (!email) return null;
 
     return (
-        <div className="flex h-screen bg-gray-50 dark:bg-[#0a0a0a] text-gray-900 dark:text-white overflow-hidden font-sans">
+        <div className="flex h-screen bg-gray-50 dark:bg-[#0a0a0a] text-gray-900 dark:text-white overflow-hidden font-sans relative">
+            {/* MOBILE MENU OVERLAY */}
+            {isMobileMenuOpen && (
+                <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm md:hidden" onClick={() => setIsMobileMenuOpen(false)}>
+                    <aside className="w-64 h-full bg-white dark:bg-[#0a0a0a] border-r border-gray-200 dark:border-white/10 flex flex-col animate-in slide-in-from-left duration-200" onClick={e => e.stopPropagation()}>
+                        <div className="p-6 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                                    <User className="w-5 h-5 text-white" />
+                                </div>
+                                <span className="font-bold text-xl tracking-tight text-gray-900 dark:text-white">
+                                    Admin<span className="text-purple-500">Panel</span>
+                                </span>
+                            </div>
+                            <button onClick={() => setIsMobileMenuOpen(false)} className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10">
+                                <X className="w-6 h-6 text-gray-500" />
+                            </button>
+                        </div>
+
+                        <nav className="flex-1 px-4 space-y-2">
+                            <button
+                                onClick={() => { setActiveTab('dashboard'); setIsMobileMenuOpen(false); }}
+                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'dashboard' ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}`}
+                            >
+                                <LayoutDashboard className="w-5 h-5" /> Dashboard
+                            </button>
+                            <button
+                                onClick={() => { setActiveTab('users'); setIsMobileMenuOpen(false); }}
+                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'users' ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}`}
+                            >
+                                <Users className="w-5 h-5" /> Users
+                            </button>
+                            <button
+                                onClick={() => { setActiveTab('items'); setFilterType('all'); setIsMobileMenuOpen(false); }}
+                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'items' ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}`}
+                            >
+                                <List className="w-5 h-5" /> All Items
+                            </button>
+                            <button
+                                onClick={() => { setActiveTab('history'); setIsMobileMenuOpen(false); }}
+                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'history' ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}`}
+                            >
+                                <Notebook className="w-5 h-5" /> History
+                            </button>
+                        </nav>
+
+                        <div className="p-4 border-t border-gray-200 dark:border-white/5">
+                            <button
+                                onClick={handleLogout}
+                                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all"
+                            >
+                                <LogOut className="w-5 h-5" /> Sign Out
+                            </button>
+                        </div>
+                    </aside>
+                </div>
+            )}
             {/* SIDEBAR */}
             <aside className="w-64 bg-white dark:bg-[#0a0a0a] border-r border-gray-200 dark:border-white/5 flex flex-col z-20 hidden md:flex">
                 <div className="p-6 flex items-center gap-2">
@@ -328,8 +385,13 @@ export default function AdminPage() {
             {/* MAIN CONTENT */}
             <main className="flex-1 flex flex-col relative overflow-hidden bg-gray-50 dark:bg-[#0a0a0a]">
                 {/* HEADER */}
-                <header className="h-20 border-b border-gray-200 dark:border-white/5 flex items-center justify-between px-8 bg-white/80 dark:bg-black/50 backdrop-blur-xl sticky top-0 z-10 w-full">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white capitalize">{activeTab} Overview</h1>
+                <header className="h-16 md:h-20 border-b border-gray-200 dark:border-white/5 flex items-center justify-between px-4 md:px-8 bg-white/80 dark:bg-black/50 backdrop-blur-xl sticky top-0 z-10 w-full">
+                    <div className="flex items-center gap-3">
+                        <button onClick={() => setIsMobileMenuOpen(true)} className="md:hidden p-2 -ml-2 text-gray-600 dark:text-gray-300">
+                            <Menu className="w-6 h-6" />
+                        </button>
+                        <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white capitalize truncate max-w-[200px]">{activeTab} Overview</h1>
+                    </div>
                     <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
                             <ShieldCheck className="w-5 h-5 text-purple-400" />

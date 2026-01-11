@@ -144,49 +144,49 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="flex min-h-screen w-full bg-white dark:bg-[#0a0a0a] overflow-hidden font-sans">
+        <div className="flex flex-col lg:flex-row min-h-screen w-full bg-white dark:bg-[#0a0a0a] font-sans">
             {/* LEFT COLUMN: BRANDING */}
-            <div className="hidden lg:flex w-1/2 relative flex-col justify-center items-center p-12 overflow-hidden bg-gray-50 dark:bg-gradient-to-br dark:from-[#0a0a0a] dark:to-[#111]">
+            <div className="flex w-full lg:w-1/2 relative flex-col justify-center items-center p-8 lg:p-12 overflow-hidden bg-gray-50 dark:bg-gradient-to-br dark:from-[#0a0a0a] dark:to-[#111] min-h-[400px] lg:min-h-screen">
                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
                     <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-purple-600/10 blur-[120px] animate-pulse" />
                     <div className="absolute bottom-[20%] -right-[10%] w-[40%] h-[40%] rounded-full bg-pink-600/10 blur-[100px] animate-pulse delay-1000" />
                 </div>
 
                 <div className="relative z-10 text-center">
-                    <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-8 shadow-2xl shadow-purple-500/20 mx-auto transform hover:scale-105 transition-transform duration-500">
-                        <Sparkles className="w-12 h-12 text-white" />
+                    <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-3xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-6 lg:mb-8 shadow-2xl shadow-purple-500/20 mx-auto transform hover:scale-105 transition-transform duration-500">
+                        <Sparkles className="w-10 h-10 lg:w-12 lg:h-12 text-white" />
                     </div>
-                    <h1 className="text-6xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
+                    <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
                         Found<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">It!</span>
                     </h1>
-                    <p className="text-gray-600 dark:text-gray-400 text-xl font-light mb-8 max-w-md mx-auto leading-relaxed">
+                    <p className="text-gray-600 dark:text-gray-400 text-base lg:text-xl font-light mb-8 max-w-md mx-auto leading-relaxed px-4">
                         The premium network for lost & found items. Connect, recover, and resolve with confidence.
                     </p>
 
-                    <div className="flex gap-4 justify-center">
-                        <div className="flex flex-col items-center gap-2 p-4 rounded-2xl glass bg-white/5 border border-white/5 w-32">
-                            <ShieldCheck className="w-6 h-6 text-emerald-400" />
-                            <span className="text-xs text-gray-300 font-medium">Verified Users</span>
+                    <div className="flex flex-wrap lg:flex-nowrap gap-4 justify-center">
+                        <div className="flex flex-col items-center gap-2 p-3 lg:p-4 rounded-2xl glass bg-white/5 border border-white/5 w-28 lg:w-32">
+                            <ShieldCheck className="w-5 h-5 lg:w-6 lg:h-6 text-emerald-400" />
+                            <span className="text-[10px] lg:text-xs text-gray-300 font-medium">Verified Users</span>
                         </div>
-                        <div className="flex flex-col items-center gap-2 p-4 rounded-2xl glass bg-white/5 border border-white/5 w-32">
-                            <Bell className="w-6 h-6 text-purple-400" />
-                            <span className="text-xs text-gray-300 font-medium">Instant Alerts</span>
+                        <div className="flex flex-col items-center gap-2 p-3 lg:p-4 rounded-2xl glass bg-white/5 border border-white/5 w-28 lg:w-32">
+                            <Bell className="w-5 h-5 lg:w-6 lg:h-6 text-purple-400" />
+                            <span className="text-[10px] lg:text-xs text-gray-300 font-medium">Instant Alerts</span>
                         </div>
-                        <div className="flex flex-col items-center gap-2 p-4 rounded-2xl glass bg-white/5 border border-white/5 w-32">
-                            <Bot className="w-6 h-6 text-pink-400" />
-                            <span className="text-xs text-gray-300 font-medium">Matching Engine</span>
+                        <div className="flex flex-col items-center gap-2 p-3 lg:p-4 rounded-2xl glass bg-white/5 border border-white/5 w-28 lg:w-32">
+                            <Bot className="w-5 h-5 lg:w-6 lg:h-6 text-pink-400" />
+                            <span className="text-[10px] lg:text-xs text-gray-300 font-medium">Matching Engine</span>
                         </div>
                     </div>
                 </div>
 
-                <div className="absolute bottom-8 left-8 flex items-center gap-2 opacity-50">
+                <div className="absolute bottom-8 left-8 flex items-center gap-2 opacity-50 hidden lg:flex">
                     <div className="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center font-bold text-xs">N</div>
                     <span className="text-[10px] text-gray-500">Powered by TechTitans • Version 1.0</span>
                 </div>
             </div>
 
             {/* RIGHT COLUMN: FORM */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white dark:bg-[#0a0a0a] relative">
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-8 bg-white dark:bg-[#0a0a0a] relative min-h-[600px] lg:min-h-screen">
                 <div className="w-full max-w-md z-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
                     <div className="mb-8">

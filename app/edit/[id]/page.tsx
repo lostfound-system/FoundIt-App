@@ -102,7 +102,7 @@ export default function EditItemPage({ params }: { params: Promise<{ id: string 
     const isLost = type === 'lost';
 
     return (
-        <div className="min-h-screen p-6 pb-20 bg-gray-50 dark:bg-[#0a0a0a]">
+        <div className="min-h-screen p-4 md:p-6 pb-20 bg-gray-50 dark:bg-[#0a0a0a]">
             <div className="max-w-3xl mx-auto">
                 <div className="flex items-center gap-4 mb-8">
                     <Link href="/dashboard" className="p-2 rounded-xl bg-gray-200 dark:bg-white/5 hover:bg-gray-300 dark:hover:bg-white/10 transition-colors">
