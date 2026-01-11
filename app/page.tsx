@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from "firebase/auth";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
-import { Eye, EyeOff, ArrowRight, UserPlus, LogIn, Mail, Lock, Bell, Sparkles, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, UserPlus, LogIn, Mail, Lock, Bell, Sparkles, ShieldCheck, Bot } from "lucide-react";
 import { useToast } from "./components/ToastProvider";
 
 export default function LoginPage() {
@@ -171,6 +171,10 @@ export default function LoginPage() {
                         <div className="flex flex-col items-center gap-2 p-4 rounded-2xl glass bg-white/5 border border-white/5 w-32">
                             <Bell className="w-6 h-6 text-purple-400" />
                             <span className="text-xs text-gray-300 font-medium">Instant Alerts</span>
+                        </div>
+                        <div className="flex flex-col items-center gap-2 p-4 rounded-2xl glass bg-white/5 border border-white/5 w-32">
+                            <Bot className="w-6 h-6 text-pink-400" />
+                            <span className="text-xs text-gray-300 font-medium">Matching Engine</span>
                         </div>
                     </div>
                 </div>

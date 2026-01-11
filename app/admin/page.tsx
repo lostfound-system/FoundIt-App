@@ -69,6 +69,7 @@ export default function AdminPage() {
     const [users, setUsers] = useState<UserData[]>([]);
     const [activeTab, setActiveTab] = useState<'dashboard' | 'items' | 'users' | 'history'>('dashboard');
     const [filterType, setFilterType] = useState<'all' | 'lost' | 'found'>('all');
+    const [userFilter, setUserFilter] = useState<'all' | 'admin' | 'user'>('all'); // NEW: User Filter State
     const [selectedItemUser, setSelectedItemUser] = useState<{ item: Item, user: UserData | undefined } | null>(null);
     const [selectedHistoryPair, setSelectedHistoryPair] = useState<MergedItemPair | null>(null); // NEW: Pair Modal State
     const [selectedItemDetail, setSelectedItemDetail] = useState<Item | null>(null); // NEW: Item Detail Modal State
@@ -695,7 +696,23 @@ export default function AdminPage() {
                     ) : activeTab === 'users' ? (
                         // USERS LIST VIEW
                         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Registered Users</h2>
+                            <div className="flex items-center justify-between">
+                                <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Users Directory</h2>
+                                <div className="flex items-center gap-3">
+                                    <div className="relative">
+                                        <select
+                                            value={userFilter}
+                                            onChange={(e) => setUserFilter(e.target.value as 'all' | 'admin' | 'user')}
+                                            className="appearance-none bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-sm font-medium rounded-xl px-4 py-3 pr-10 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 cursor-pointer"
+                                        >
+                                            <option value="all" className="bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white">All Users</option>
+                                            <option value="admin" className="bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white">Admin Users</option>
+                                            <option value="user" className="bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white">Registered Users</option>
+                                        </select>
+                                        <Filter className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+                                    </div>
+                                </div>
+                            </div>
 
                             <div className="bg-white dark:bg-white/5 rounded-xl overflow-hidden border border-gray-200 dark:border-white/5">
                                 <div className="overflow-x-auto">
@@ -712,7 +729,13 @@ export default function AdminPage() {
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-gray-200 dark:divide-white/5">
-                                            {users.map((user) => (
+                                            {users.filter(u => {
+                                                if (userFilter === 'all') return true;
+                                                const isAdmin = u.email?.toLowerCase() === "foundit.connect@gmail.com" || u.email?.toLowerCase() === "foundit.connect@gamil.com";
+                                                if (userFilter === 'admin') return isAdmin;
+                                                if (userFilter === 'user') return !isAdmin;
+                                                return true;
+                                            }).map((user) => (
                                                 <tr key={user.id} className="hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
                                                     <td className="px-6 py-4">
                                                         <div className="flex items-center gap-3">
@@ -721,8 +744,13 @@ export default function AdminPage() {
                                                             {user.name?.[0] || <User className="w-5 h-5" />}
                                                         </div> */}
                                                             <div>
-                                                                <div className="font-bold text-gray-900 dark:text-white">{user.name || "Anonymous"}</div>
-                                                                <div className="text-xs text-gray-500">{user.email || "N/A"}</div>
+                                                                <div className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                                                    {user.name || "Anonymous"}
+                                                                    {(user.email?.toLowerCase() === "foundit.connect@gmail.com" || user.email?.toLowerCase() === "foundit.connect@gamil.com") && (
+                                                                        <span className="text-[10px] bg-purple-500/20 text-purple-400 px-1.5 py-0.5 rounded border border-purple-500/30 uppercase tracking-wide font-bold">Admin</span>
+                                                                    )}
+                                                                </div>
+                                                                {/* Email Removed from display as per request */}
                                                             </div>
                                                         </div>
                                                     </td>
@@ -757,9 +785,15 @@ export default function AdminPage() {
                                         </tbody>
                                     </table>
                                 </div>
-                                {users.length === 0 && !isLoading && (
-                                    <div className="p-8 text-center text-gray-500">No users found.</div>
-                                )}
+                                {users.filter(u => {
+                                    if (userFilter === 'all') return true;
+                                    const isAdmin = u.email?.toLowerCase() === "foundit.connect@gmail.com" || u.email?.toLowerCase() === "foundit.connect@gamil.com";
+                                    if (userFilter === 'admin') return isAdmin;
+                                    if (userFilter === 'user') return !isAdmin;
+                                    return true;
+                                }).length === 0 && !isLoading && (
+                                        <div className="p-8 text-center text-gray-500">No users found matching filter.</div>
+                                    )}
                             </div>
                         </div>
                     ) : activeTab === 'history' ? (
