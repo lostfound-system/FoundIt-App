@@ -11,7 +11,8 @@ import { useToast } from "./components/ToastProvider";
 export default function LoginPage() {
     const router = useRouter();
     const { showToast } = useToast();
-    const [isLoading, setIsLoading] = useState(false);
+    const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+    const [isEmailLoading, setIsEmailLoading] = useState(false);
     const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
     const [showPassword, setShowPassword] = useState(false);
     const [showForgotPassword, setShowForgotPassword] = useState(false); // Added for forgot password UI state
@@ -23,7 +24,7 @@ export default function LoginPage() {
     const [error, setError] = useState("");
 
     const handleGoogleLogin = async () => {
-        setIsLoading(true);
+        setIsGoogleLoading(true);
         setError("");
         try {
             const provider = new GoogleAuthProvider();
@@ -59,13 +60,13 @@ export default function LoginPage() {
             console.error("Login failed", error);
             setError("Google Sign-In failed. Please try again.");
         } finally {
-            setIsLoading(false);
+            setIsGoogleLoading(false);
         }
     };
 
     const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault();
-        setIsLoading(true);
+        setIsEmailLoading(true);
         setError("");
 
         // Domain Validation
@@ -77,7 +78,7 @@ export default function LoginPage() {
 
         if (!emailDomain || (!allowedDomains.includes(emailDomain) && !isAdminEmail)) {
             setError("Please use an authorized email provider (Gmail, Yahoo, Hotmail, etc).");
-            setIsLoading(false);
+            setIsEmailLoading(false);
             return;
         }
 
@@ -139,7 +140,7 @@ export default function LoginPage() {
                 setError(error.message || "Failed to create account.");
             }
         } finally {
-            setIsLoading(false);
+            setIsEmailLoading(false);
         }
     };
 
@@ -153,8 +154,8 @@ export default function LoginPage() {
                 </div>
 
                 <div className="relative z-10 text-center">
-                    <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-3xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-6 lg:mb-8 shadow-2xl shadow-purple-500/20 mx-auto transform hover:scale-105 transition-transform duration-500">
-                        <Sparkles className="w-10 h-10 lg:w-12 lg:h-12 text-white" />
+                    <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-3xl overflow-hidden shadow-2xl shadow-purple-500/20 mx-auto mb-6 lg:mb-8 transform hover:scale-105 transition-transform duration-500">
+                        <img src="/logo.jpg" alt="FoundIt Logo" className="w-full h-full object-cover" />
                     </div>
                     <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
                         Found<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">It!</span>
@@ -289,10 +290,16 @@ export default function LoginPage() {
 
                         <button
                             type="submit"
-                            disabled={isLoading}
+                            disabled={isEmailLoading || isGoogleLoading}
                             className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-purple-500/25 transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 mt-4"
                         >
-                            {activeTab === 'login' ? 'Sign In' : 'Create Account'} <ArrowRight className="w-4 h-4" />
+                            {isEmailLoading ? (
+                                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                                <>
+                                    {activeTab === 'login' ? 'Sign In' : 'Create Account'} <ArrowRight className="w-4 h-4" />
+                                </>
+                            )}
                         </button>
                     </form>
 
@@ -307,10 +314,10 @@ export default function LoginPage() {
 
                     <button
                         onClick={handleGoogleLogin}
-                        disabled={isLoading}
+                        disabled={isGoogleLoading || isEmailLoading}
                         className="w-full flex items-center justify-center gap-3 bg-white text-gray-900 font-bold py-3.5 rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98]"
                     >
-                        {isLoading ? (
+                        {isGoogleLoading ? (
                             <div className="w-4 h-4 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
                         ) : (
                             <>
@@ -320,7 +327,7 @@ export default function LoginPage() {
                                     <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
                                     <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                                 </svg>
-                                Sign in with Google
+                                {activeTab === 'login' ? 'Login with Google' : 'Sign up with Google'}
                             </>
                         )}
                     </button>

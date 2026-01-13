@@ -1,29 +1,26 @@
-"use client";
-
+import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "./components/Navbar";
-import { usePathname } from "next/navigation";
+import ClientLayout from "./components/ClientLayout";
 
-import { ToastProvider } from "./components/ToastProvider";
+export const metadata: Metadata = {
+  title: "FoundIt!",
+  description: "Campus Lost & Found System",
+  icons: {
+    icon: "/logo.jpg",
+  },
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = usePathname();
-  const isLoginPage = pathname === "/";
-  const isAdminPage = pathname?.startsWith("/admin");
-
   return (
     <html lang="en">
       <body className="bg-background text-foreground antialiased suppress-hydration-warning">
-        <ToastProvider>
-          {!isLoginPage && !isAdminPage && <Navbar />}
-          <main className={!isLoginPage && !isAdminPage ? "pt-24" : ""}>
-            {children}
-          </main>
-        </ToastProvider>
+        <ClientLayout>
+          {children}
+        </ClientLayout>
       </body>
     </html>
   );
