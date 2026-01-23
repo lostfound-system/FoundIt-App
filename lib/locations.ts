@@ -10,65 +10,66 @@ export const LOCATIONS: Locations = {
     "India": {
         "Gujarat": {
             "Ahmedabad": [
-                "Ahmedabad University",
-                "Gujarat University",
-                "Nirma University",
-                "CEPT University",
-                "Indian Institute of Management Ahmedabad (IIMA)",
-                "Vishwakarma Government Engineering College (VGEC)",
+                "AU (Ahmedabad University)",
+                "GU (Gujara t University)",
+                "NU (Nirma University)",
+                "CU (CEPT University)",
+                "IIMA (Indian Institute of Management Ahmedabad)",
+                "VGEC (Vishwakarma Government Engineering College)",
                 "L.D. College of Engineering",
                 "Silver Oak University",
                 "Indus University",
-                "Karnavati University",
+                "KU (Karnavati University)",
                 "GLS University",
-                "Anant National University",
-                "Sals College of Engineering",
+                "ANU (Anant National University)",
+                "SAL College of Engineering",
                 "LJ University"
             ],
             "Gandhinagar": [
-                "Indian Institute of Technology Gandhinagar (IITGN)",
-                "Pdpu (Pandit Deendayal Energy University)",
-                "Dhirubhai Ambani Institute of Information and Communication Technology (DA-IICT)",
+                "IITGN (Indian Institute of Technology Gandhinagar)",
+                "PDEU (Pandit Deendayal Energy University)",
+                "DA-IICT (Dhirubhai Ambani Institute of Information and Communication Technology)",
                 "Adani University",
-                "National Forensic Sciences University (NFSU)"
+                "NFSU (National Forensic Sciences University)"
             ],
             "Baroda": [
-                "Maharaja Sayajirao University of Baroda",
+                "MSU (Maharaja Sayajirao University of Baroda)",
                 "Parul University",
                 "Navrachana University"
             ],
             "Surat": [
-                "Sardar Vallabhbhai National Institute of Technology (SVNIT)",
+                "SVNIT (Sardar Vallabhbhai National Institute of Technology)",
                 "AURO University",
-                "Veer Narmad South Gujarat University"
+                "VNSGU (Veer Narmad South Gujarat University)"
             ]
         },
         "Maharashtra": {
             "Mumbai": [
-                "Indian Institute of Technology Bombay (IITB)",
-                "University of Mumbai",
-                "Tata Institute of Social Sciences (TISS)",
-                "NMIMS"
+                "IITB (Indian Institute of Technology Bombay)",
+                "MU (University of Mumbai)",
+                "TISS (Tata Institute of Social Sciences)",
+                "NMIMS (National Institute of Management Studies)"
             ],
             "Pune": [
-                "Savitribai Phule Pune University",
-                "Symbiosis International University",
-                "MIT World Peace University"
+                "SPPU (Savitribai Phule Pune University)",
+                "SIU (Symbiosis International University)",
+                "MIT World Peace University",
+                "DYPU (D Y Patil University)"
             ]
         },
         "Karnataka": {
             "Bengaluru": [
-                "Indian Institute of Science (IISc)",
+                "IISc (Indian Institute of Science)",
                 "IIIT Bangalore",
                 "Christ University"
             ]
         },
         "Delhi": {
             "New Delhi": [
-                "Indian Institute of Technology Delhi (IITD)",
-                "Jawaharlal Nehru University (JNU)",
-                "University of Delhi",
-                "Jamia Millia Islamia"
+                "IITD (Indian Institute of Technology Delhi)",
+                "JNU (Jawaharlal Nehru University)",
+                "DU (University of Delhi)",
+                "JMI (Jamia Millia Islamia)"
             ]
         }
     }

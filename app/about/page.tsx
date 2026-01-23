@@ -3,14 +3,17 @@
 import Link from "next/link";
 import { ArrowLeft, Mail, Search, Target, Eye, Sparkles } from "lucide-react";
 import Footer from "../components/Footer";
+import TiltCard from "../components/3d/TiltCard";
+import dynamic from "next/dynamic";
+
+const AboutScene = dynamic(() => import("../components/3d/AboutScene"), { ssr: false });
 
 export default function AboutPage() {
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
-            {/* Background Gradients */}
-            <div className="fixed top-0 left-0 w-full h-screen overflow-hidden -z-10 pointer-events-none">
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-900/20 blur-[120px]" />
-                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-pink-900/10 blur-[120px]" />
+        <div className="min-h-screen text-white overflow-x-hidden relative">
+            {/* 3D CRYSTAL BACKGROUND */}
+            <div className="fixed inset-0 w-full h-full -z-10 pointer-events-none">
+                <AboutScene />
             </div>
 
             <div className="max-w-5xl mx-auto px-6 pt-10 pb-20">
@@ -32,32 +35,28 @@ export default function AboutPage() {
                 </div>
 
                 {/* Vision & Mission Cards */}
-                <div className="grid md:grid-cols-2 gap-8 mb-24">
+                <div className="grid md:grid-cols-2 gap-10 mb-24 px-4">
                     {/* Vision */}
-                    <div className="p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-purple-500/30 transition-all group relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover:bg-purple-500/20 transition-all" />
-                        
-                        <div className="w-14 h-14 rounded-2xl bg-purple-500/20 flex items-center justify-center mb-6 text-purple-400 group-hover:scale-110 transition-transform">
+                    <TiltCard glowColor="purple" className="p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-purple-500/30 group relative overflow-hidden h-full">
+                        <div className="w-14 h-14 rounded-2xl bg-purple-500/20 flex items-center justify-center mb-6 text-purple-400">
                             <Eye className="w-7 h-7" />
                         </div>
                         <h2 className="text-2xl font-bold mb-4">Our Vision</h2>
                         <p className="text-gray-400 leading-relaxed">
                             To create a seamless, stress-free campus environment where lost items always find their way back home, fostering a culture of honesty and mutual support.
                         </p>
-                    </div>
+                    </TiltCard>
 
                     {/* Mission */}
-                    <div className="p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-pink-500/30 transition-all group relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover:bg-pink-500/20 transition-all" />
-                        
-                        <div className="w-14 h-14 rounded-2xl bg-pink-500/20 flex items-center justify-center mb-6 text-pink-400 group-hover:scale-110 transition-transform">
+                    <TiltCard glowColor="pink" className="p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-pink-500/30 group relative overflow-hidden h-full">
+                        <div className="w-14 h-14 rounded-2xl bg-pink-500/20 flex items-center justify-center mb-6 text-pink-400">
                             <Target className="w-7 h-7" />
                         </div>
                         <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
                         <p className="text-gray-400 leading-relaxed">
                             Leveraging modern technology to connect people and their belongings with speed, security, and simplicity, reducing the anxiety of loss.
                         </p>
-                    </div>
+                    </TiltCard>
                 </div>
 
                 {/* Future Functionalities (Moved from Dashboard) */}

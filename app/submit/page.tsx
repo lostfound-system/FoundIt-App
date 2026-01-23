@@ -10,6 +10,9 @@ import Link from "next/link";
 import RegionUniversitySelect from "../components/RegionUniversitySelect";
 import { CATEGORIES } from "@/lib/constants";
 import * as LucideIcons from "lucide-react";
+import dynamicImport from "next/dynamic";
+
+const SubmitScene = dynamicImport(() => import("../components/3d/SubmitScene"), { ssr: false });
 
 export const dynamic = 'force-dynamic';
 
@@ -62,8 +65,13 @@ function SubmitForm() {
     }, [router]);
 
     return (
-        <div className="min-h-screen p-4 md:p-6 pb-20 bg-gray-50 dark:bg-[#0a0a0a]">
-            <div className="max-w-3xl mx-auto">
+        <div className="min-h-screen p-4 md:p-6 pb-20 relative overflow-hidden">
+            {/* 3D SCANNER BACKGROUND */}
+            <div className="fixed inset-0 w-full h-full -z-10">
+                <SubmitScene mode={isLost ? 'lost' : 'found'} />
+            </div>
+
+            <div className="max-w-3xl mx-auto relative z-10">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
                     <Link href="/dashboard" className="p-2 rounded-xl bg-gray-200 dark:bg-white/5 hover:bg-gray-300 dark:hover:bg-white/10 transition-colors">

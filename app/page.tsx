@@ -7,6 +7,9 @@ import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { Eye, EyeOff, ArrowRight, UserPlus, LogIn, Mail, Lock, Bell, Sparkles, ShieldCheck, Bot } from "lucide-react";
 import { useToast } from "./components/ToastProvider";
+import dynamic from "next/dynamic";
+
+const HeroScene = dynamic(() => import("./components/3d/HeroScene"), { ssr: false });
 
 export default function LoginPage() {
     const router = useRouter();
@@ -148,39 +151,40 @@ export default function LoginPage() {
         <div className="flex flex-col lg:flex-row min-h-screen w-full bg-white dark:bg-[#0a0a0a] font-sans">
             {/* LEFT COLUMN: BRANDING */}
             <div className="flex w-full lg:w-1/2 relative flex-col justify-center items-center p-8 lg:p-12 overflow-hidden bg-gray-50 dark:bg-gradient-to-br dark:from-[#0a0a0a] dark:to-[#111] min-h-[400px] lg:min-h-screen">
-                <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
-                    <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-purple-600/10 blur-[120px] animate-pulse" />
-                    <div className="absolute bottom-[20%] -right-[10%] w-[40%] h-[40%] rounded-full bg-pink-600/10 blur-[100px] animate-pulse delay-1000" />
+
+                {/* 3D BACKGROUND */}
+                <div className="absolute inset-0 z-0">
+                    <HeroScene />
                 </div>
 
-                <div className="relative z-10 text-center">
-                    <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-3xl overflow-hidden shadow-2xl shadow-purple-500/20 mx-auto mb-6 lg:mb-8 transform hover:scale-105 transition-transform duration-500">
+                <div className="relative z-10 text-center pointer-events-none select-none">
+                    <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-3xl overflow-hidden shadow-2xl shadow-purple-500/20 mx-auto mb-6 lg:mb-8 transform hover:scale-105 transition-transform duration-500 pointer-events-auto">
                         <img src="/logo.jpg" alt="FoundIt Logo" className="w-full h-full object-cover" />
                     </div>
-                    <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
+                    <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight drop-shadow-sm">
                         Found<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">It!</span>
                     </h1>
-                    <p className="text-gray-600 dark:text-gray-400 text-base lg:text-xl font-light mb-8 max-w-md mx-auto leading-relaxed px-4">
+                    <p className="text-gray-600 dark:text-gray-300 text-base lg:text-xl font-light mb-8 max-w-md mx-auto leading-relaxed px-4 drop-shadow-sm">
                         The premium network for lost & found items. Connect, recover, and resolve with confidence.
                     </p>
 
-                    <div className="flex flex-wrap lg:flex-nowrap gap-4 justify-center">
-                        <div className="flex flex-col items-center gap-2 p-3 lg:p-4 rounded-2xl glass bg-white/5 border border-white/5 w-28 lg:w-32">
+                    <div className="flex flex-wrap lg:flex-nowrap gap-4 justify-center pointer-events-auto">
+                        <div className="flex flex-col items-center gap-2 p-3 lg:p-4 rounded-2xl glass bg-white/10 border border-white/10 backdrop-blur-md w-28 lg:w-32 shadow-xl">
                             <ShieldCheck className="w-5 h-5 lg:w-6 lg:h-6 text-emerald-400" />
-                            <span className="text-[10px] lg:text-xs text-gray-300 font-medium">Verified Users</span>
+                            <span className="text-[10px] lg:text-xs text-gray-200 font-medium">Verified Users</span>
                         </div>
-                        <div className="flex flex-col items-center gap-2 p-3 lg:p-4 rounded-2xl glass bg-white/5 border border-white/5 w-28 lg:w-32">
+                        <div className="flex flex-col items-center gap-2 p-3 lg:p-4 rounded-2xl glass bg-white/10 border border-white/10 backdrop-blur-md w-28 lg:w-32 shadow-xl">
                             <Bell className="w-5 h-5 lg:w-6 lg:h-6 text-purple-400" />
-                            <span className="text-[10px] lg:text-xs text-gray-300 font-medium">Instant Alerts</span>
+                            <span className="text-[10px] lg:text-xs text-gray-200 font-medium">Instant Alerts</span>
                         </div>
-                        <div className="flex flex-col items-center gap-2 p-3 lg:p-4 rounded-2xl glass bg-white/5 border border-white/5 w-28 lg:w-32">
+                        <div className="flex flex-col items-center gap-2 p-3 lg:p-4 rounded-2xl glass bg-white/10 border border-white/10 backdrop-blur-md w-28 lg:w-32 shadow-xl">
                             <Bot className="w-5 h-5 lg:w-6 lg:h-6 text-pink-400" />
-                            <span className="text-[10px] lg:text-xs text-gray-300 font-medium">Matching Engine</span>
+                            <span className="text-[10px] lg:text-xs text-gray-200 font-medium">Matching Engine</span>
                         </div>
                     </div>
                 </div>
 
-                <div className="absolute bottom-8 left-8 flex items-center gap-2 opacity-50 hidden lg:flex">
+                <div className="absolute bottom-8 left-8 flex items-center gap-2 opacity-50 hidden lg:flex z-10">
                     <div className="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center font-bold text-xs">N</div>
                     <span className="text-[10px] text-gray-500">Powered by TechTitans • Version 1.0</span>
                 </div>

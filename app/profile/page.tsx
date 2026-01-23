@@ -10,6 +10,9 @@ import { LOCATIONS } from "@/lib/locations";
 import RegionUniversitySelect from "../components/RegionUniversitySelect";
 import Footer from "../components/Footer";
 import { useToast } from "../components/ToastProvider";
+import dynamic from "next/dynamic";
+
+const ProfileScene = dynamic(() => import("../components/3d/ProfileScene"), { ssr: false });
 
 export default function ProfilePage() {
     const router = useRouter();
@@ -118,8 +121,13 @@ export default function ProfilePage() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col pt-16 bg-gray-50 dark:bg-[#0a0a0a]">
-            <div className="flex-1 w-full max-w-5xl mx-auto p-4">
+        <div className="min-h-screen flex flex-col pt-16 relative">
+            {/* 3D IDENTITY HUD BACKGROUND */}
+            <div className="fixed inset-0 w-full h-full -z-10 pointer-events-none">
+                <ProfileScene />
+            </div>
+
+            <div className="flex-1 w-full max-w-5xl mx-auto p-4 z-10">
 
                 {/* Header / Back */}
                 <div className="flex items-center gap-4 mb-2">

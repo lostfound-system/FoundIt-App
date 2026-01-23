@@ -8,6 +8,9 @@ import Footer from "../components/Footer";
 import { doc, getDoc, setDoc, serverTimestamp, collection, query, where, getDocs, orderBy, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useToast } from "../components/ToastProvider";
+import dynamic from "next/dynamic";
+
+const DashboardScene = dynamic(() => import("../components/3d/DashboardScene"), { ssr: false });
 
 interface Item {
     id: string;
@@ -38,6 +41,12 @@ export default function DashboardPage() {
     // New State for Items
     const [myItems, setMyItems] = useState<Item[]>([]);
     const [loadingItems, setLoadingItems] = useState(true);
+
+    const [dashboardTab, setDashboardTab] = useState<'active' | 'history'>('active');
+    const [resolvingItem, setResolvingItem] = useState<Item | null>(null);
+    const [expandedHistoryId, setExpandedHistoryId] = useState<string | null>(null);
+    const [potentialMatches, setPotentialMatches] = useState<Set<string>>(new Set());
+    const [showMatchPopup, setShowMatchPopup] = useState(false);
 
     useEffect(() => {
         const checkUser = async () => {
@@ -142,12 +151,6 @@ export default function DashboardPage() {
         }
     };
 
-    const [dashboardTab, setDashboardTab] = useState<'active' | 'history'>('active');
-    const [resolvingItem, setResolvingItem] = useState<Item | null>(null);
-    const [expandedHistoryId, setExpandedHistoryId] = useState<string | null>(null);
-    const [potentialMatches, setPotentialMatches] = useState<Set<string>>(new Set());
-    const [showMatchPopup, setShowMatchPopup] = useState(false);
-
     useEffect(() => {
         const checkMatches = async () => {
             if (myItems.length === 0) return;
@@ -211,8 +214,13 @@ export default function DashboardPage() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col pt-20">
-            <div className="flex-1 w-full max-w-5xl mx-auto p-4 md:p-6">
+        <div className="min-h-screen flex flex-col pt-20 relative overflow-hidden">
+            {/* 3D COMMAND CENTER BACKGROUND */}
+            <div className="fixed inset-0 z-0 pointer-events-none">
+                <DashboardScene />
+            </div>
+
+            <div className="flex-1 w-full max-w-5xl mx-auto p-4 md:p-6 relative z-10">
 
                 {/* Username Modal */}
                 {showNameModal && (

@@ -6,7 +6,7 @@ import { collection, getDocs, query, orderBy, deleteDoc, doc, updateDoc, where, 
 import { db } from "@/lib/firebase";
 import { Trash2, MapPin, LogOut, LayoutDashboard, List, CheckCircle, Search, PieChart, Users, Box, Check, User, Notebook, ShieldCheck, CheckCircle2, AlertCircle, Package, History, Filter, X, ChevronRight, Database, BarChart3, TrendingUp, MoreVertical, Menu } from "lucide-react";
 import { useToast } from "../components/ToastProvider";
-import { resolveMatch, resolveItem, deleteItem, deleteUserAndData } from "../actions";
+import { deleteItem, deleteUserAndData } from "../actions";
 
 interface Item {
     id: string;
